@@ -16,7 +16,10 @@ void draw() {
   ellipse(100,100,100,100);
   
   pushMatrix();
-  translate(100 + 50*cos(angle),100 + 50*sin(angle),0);
+  translate(100,100,0);
+  rotateZ(angle);
+  translate(50,0,0);
+  rotateY(PI/2.0);
   
   ellipse(0,0,20,20);
   
