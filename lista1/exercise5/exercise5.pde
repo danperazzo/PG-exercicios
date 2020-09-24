@@ -20,8 +20,10 @@ void draw() {
   rotateZ(angle);
   translate(50,0,0);
   rotateY(PI/2.0);
+  translate(-50,0,0);
   
-  ellipse(0,0,20,20);
+  ellipse(50*sin(angle),50*cos(angle),5,5);
+  ellipse(0,0,100,100);
   
   popMatrix();
   stroke(255);
