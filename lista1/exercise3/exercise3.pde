@@ -1,10 +1,12 @@
-color red = color(255, 0, 0);
-color green = color(0, 255, 0);
-color blue = color(0, 0, 255);
+color RED = color(255, 0, 0);
+color GREEN = color(0, 255, 0);
+color BLUE = color(0, 0, 255);
 
-int curve_counter = 1, fps = 60;
-float dist = 3600, radius = 20, theta = 180, speed = (180 * radius ) / (fps * 4), w = speed / radius;
-float center_x, center_y, pos_x, pos_y, old_pos_x, old_pos_y, old_radius;
+int curve_counter = 1, FPS = 120;
+float radius = 20, theta = 180;
+float velocity = (180 * radius ) / (FPS * 4);
+float OMEGA = velocity / radius;
+float center_x, center_y, pos_x, pos_y, old_pos_x, old_pos_y;
 
 void setup() {
   size(640, 640);
@@ -17,26 +19,26 @@ void setup() {
   background(200);
   
   // Drawing x-axis
-  stroke(blue);
+  stroke(BLUE);
   line(0, center_y, width, center_y);
   
   // Drawing y-axis
-  stroke(green);
+  stroke(GREEN);
   line(center_x, 0, center_x, height);
   
-  stroke(red);
-  strokeWeight(1);
+  stroke(RED);
+  strokeWeight(4);
   smooth();
   
-  frameRate(fps);
+  frameRate(FPS);
   
   old_pos_x = - radius;
   old_pos_y = 0.0;
 }
 
 void draw() { 
-  // Calculating the new Updating the theta
-  theta -= w;
+  // Updating the theta
+  theta -= OMEGA;
   
   // Calculating the current point position
   pos_x = radius * cos(radians(theta));
@@ -66,7 +68,7 @@ void draw() {
     radius = 2 * radius;
     
     // Updating values for the new circle
-    speed = (180 * radius ) / (fps * 4);   
+    velocity = (180 * radius ) / (FPS * 4);   
     pos_x = radius * cos(radians(theta));
     old_pos_x = pos_x;
   }  

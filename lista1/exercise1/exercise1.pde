@@ -3,11 +3,9 @@ float UC = 0.5;
 float PARTICLE_OFFSET = ((RAIO * UC) / 2);
 float VEL_X = 12.0 * UC, VEL_Y = 10.0 * UC;
 
-color red = color(255, 0, 0);
-color blue = color(0, 0, 255);
+color RED = color(255, 0, 0);
+color BLUE = color(0, 0, 255);
 
-//int i = 0;
-//int t0 = millis();
 
 // A DynamicObject object (i.e., the particle)
 DynamicObject particle;
@@ -25,16 +23,11 @@ void draw() {
   background(200);
 
   // Filling the floor (i.e., bottom half) with red 
-  fill(red);
+  fill(RED);
   rect(0, height*0.5, width, height - height*0.5);
   
   frameRate(30);
-  
-  //if (i == 0){
-  //  t0 = millis();
-  //  i += 1;
-  //}
-  
+    
   // Updating the particle's location
   particle.update();
     
@@ -82,13 +75,8 @@ class DynamicObject {
   }
 
   void display() {
-    //if (location.x == 0. + PARTICLE_OFFSET){
-    //  print("Período = ", (millis() - t0), "ms\n");
-    //  i = 0;
-    //}
-    
     // Displaying a blue particle
-    fill(blue);
+    fill(BLUE);
     ellipse(location.x,location.y,RAIO*UC,RAIO*UC);
   }
 }
