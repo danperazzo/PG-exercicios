@@ -1,14 +1,22 @@
-static float DIAMETRO = 60.0, UC = 0.25, ANG = 90.0;
-float PARTICLE_OFFSET = (DIAMETRO*UC)/2;
-float VEL = 10.0 * UC;
-float VEL_X = VEL*3*cos(ANG), VEL_Y = VEL*sin(ANG);
+float RAIO = 30.0;
+float UC = 0.5;
+float PARTICLE_OFFSET = ((RAIO * UC) / 2);
+float VEL_X = 12.0 * UC, VEL_Y = 10.0 * UC;
+
+color red = color(255, 0, 0);
+color blue = color(0, 0, 255);
+
+//int i = 0;
+//int t0 = millis();
 
 // A DynamicObject object (i.e., the particle)
 DynamicObject particle;
 
 void setup() {
-  // Initializing the 370x280 screen and the particle 
-  size(373,280);
+  // Initializing the 390x280 screen and the particle 
+  size(375,280);
+  noStroke();
+  
   particle = new DynamicObject(); 
 }
 
@@ -17,22 +25,25 @@ void draw() {
   background(200);
 
   // Filling the floor (i.e., bottom half) with red 
-  color red = color(255, 0, 0);
   fill(red);
   rect(0, height*0.5, width, height - height*0.5);
   
-  frameRate(50);
-    
-  // Displaying the particle
-  particle.display(); 
+  frameRate(30);
+  
+  //if (i == 0){
+  //  t0 = millis();
+  //  i += 1;
+  //}
   
   // Updating the particle's location
   particle.update();
+    
+  // Displaying the particle
+  particle.display(); 
 }
 
 class DynamicObject {
-
-  // The DynamicObject tracks location, velocity, and acceleration 
+  // The DynamicObject tracks location, velocity, and gravity values 
   PVector location;
   PVector velocity;
   PVector gravity;
@@ -52,26 +63,32 @@ class DynamicObject {
     velocity.add(gravity);
         
     // Bounce off edges
-    if ((location.x > width) || (location.x < 0)) {
+    if (location.x > width - PARTICLE_OFFSET){
       velocity.x = velocity.x * - 1.0;
+      location.x = width - PARTICLE_OFFSET;
     }
-    if (location.y < height / 4){
+    else if (location.x < 0. + PARTICLE_OFFSET){
+      velocity.x = velocity.x * - 1.0;
+      location.x = 0. + PARTICLE_OFFSET;
+    }
+    if (location.y < (height / 2 - PARTICLE_OFFSET) - 100 * UC){
       velocity.y = velocity.y * -1.0; 
-      location.y = height / 4 + PARTICLE_OFFSET;
+      location.y = (height / 2 - PARTICLE_OFFSET) - 100 * UC;
     }
-    else if (location.y > height / 2){
+    if (location.y > height / 2 - PARTICLE_OFFSET){
       velocity.y = velocity.y * -1.0; 
       location.y = height / 2 - PARTICLE_OFFSET;
-    }
+    }   
   }
 
   void display() {
+    //if (location.x == 0. + PARTICLE_OFFSET){
+    //  print("Período = ", (millis() - t0), "ms\n");
+    //  i = 0;
+    //}
+    
     // Displaying a blue particle
-    color blue = color(0, 0, 255);
-    stroke(0);
-    strokeWeight(1);
     fill(blue);
-    ellipse(location.x,location.y,DIAMETRO*UC,DIAMETRO*UC);
+    ellipse(location.x,location.y,RAIO*UC,RAIO*UC);
   }
-
 }
