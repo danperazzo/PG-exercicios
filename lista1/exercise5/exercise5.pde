@@ -1,5 +1,7 @@
 float angle = 0;
-float scale=0.25;
+float scale=0.5;
+color RED = color(255, 0, 0);
+color BLUE = color(0, 0, 255);
 
 
 void setup() {
@@ -11,8 +13,8 @@ void draw() {
   angle += 0.01*PI;
   
   background(0);
-  rotateX(PI/3);
   translate(width/2, height/2, -100);
+  rotateX(PI/3);
   rect(0, 0, 400*scale, 400*scale);
   ellipse(200*scale,200*scale,200*scale,200*scale);
   
@@ -23,8 +25,15 @@ void draw() {
   rotateY(PI/2.0);
   translate(-25*scale,0,0);
   
-  ellipse(scale*25*sin(angle),scale*25*cos(angle),1,1);
+  // Drawing the red point in the inner circle
+  stroke(RED);
+  fill(RED);
+  ellipse(scale*25*sin(angle*4),scale*25*cos(angle*4),2,2);
+  
+  stroke(BLUE);
+  noFill();
   ellipse(0,0,50*scale,50*scale);
+  
   
   popMatrix();
   stroke(255);
