@@ -1,21 +1,25 @@
-float RAIO = 30.0;
-float UC = 0.5;
-float PARTICLE_OFFSET = ((RAIO * UC) / 2);
-float VEL_X = 12.0 * UC, VEL_Y = 10.0 * UC;
-
 color RED = color(255, 0, 0);
 color BLUE = color(0, 0, 255);
 
+int FPS = 60;
+float UC = 0.25;
+float PARTICLE_RADIUS = 30.0 * UC;
+float PARTICLE_OFFSET = PARTICLE_RADIUS;
+float GRAVITY = -0.5 * UC;
+float v0_x = (360 / (2 * FPS)), v0_y = 10.0 * UC;
+float s, h, s0, h0, v_y;
+int t_1 = 1, t_2 = 1, t0 = millis(), f1= 1;
 
-// A DynamicObject object (i.e., the particle)
-DynamicObject particle;
 
 void setup() {
-  // Initializing the 390x280 screen and the particle 
   size(375,280);
   noStroke();
   
-  particle = new DynamicObject(); 
+  // Initializing the particle 
+  s0 = PARTICLE_OFFSET;
+  h0 = -PARTICLE_OFFSET;
+  s = s0;
+  h = h0;
 }
 
 void draw() {  
@@ -24,59 +28,45 @@ void draw() {
 
   // Filling the floor (i.e., bottom half) with red 
   fill(RED);
-  rect(0, height*0.5, width, height - height*0.5);
+  rect(0, height/2, width, height - height/2);
   
-  frameRate(30);
-    
-  // Updating the particle's location
-  particle.update();
-    
-  // Displaying the particle
-  particle.display(); 
-}
-
-class DynamicObject {
-  // The DynamicObject tracks location, velocity, and gravity values 
-  PVector location;
-  PVector velocity;
-  PVector gravity;
-
-  DynamicObject() {
-    // Starting in the left corner and on the floor
-    location = new PVector(0. + PARTICLE_OFFSET, height/2 - PARTICLE_OFFSET);
-    velocity = new PVector(VEL_X,VEL_Y);
-    gravity = new PVector(0.,-0.5 * UC);
+  frameRate(FPS);
+  
+  // Drawning the blue particle
+  translate(0, height/2);
+  fill(BLUE);
+  ellipse(s, h, 2 * PARTICLE_RADIUS, 2 * PARTICLE_RADIUS);
+  
+  
+  // Updating the particle's position and vertical velocity
+  s = s0 + v0_x * t_1;
+  h = h0 - v0_y * t_2 + (1 / 2) * (GRAVITY * pow(t_2,2));
+  v_y = v0_y + GRAVITY * t_2;
+  
+  // Bounce off edges
+  if(s >= width - PARTICLE_OFFSET){
+    v0_x = v0_x * -1;
+    s0 = width - PARTICLE_OFFSET;
+    t_1 = 1;
   }
-
-  void update() {   
-    // Location changes by velocity
-    location.add(velocity);
-    
-    // Add gravity to velocity
-    velocity.add(gravity);
-        
-    // Bounce off edges
-    if (location.x > width - PARTICLE_OFFSET){
-      velocity.x = velocity.x * - 1.0;
-      location.x = width - PARTICLE_OFFSET;
-    }
-    else if (location.x < 0. + PARTICLE_OFFSET){
-      velocity.x = velocity.x * - 1.0;
-      location.x = 0. + PARTICLE_OFFSET;
-    }
-    if (location.y < (height / 2 - PARTICLE_OFFSET) - 100 * UC){
-      velocity.y = velocity.y * -1.0; 
-      location.y = (height / 2 - PARTICLE_OFFSET) - 100 * UC;
-    }
-    if (location.y > height / 2 - PARTICLE_OFFSET){
-      velocity.y = velocity.y * -1.0; 
-      location.y = height / 2 - PARTICLE_OFFSET;
-    }   
+  else if(s <= 0 + PARTICLE_OFFSET){
+    v0_x = v0_x * -1;
+    s0 = PARTICLE_OFFSET;
+    t_1 = 1;
   }
-
-  void display() {
-    // Displaying a blue particle
-    fill(BLUE);
-    ellipse(location.x,location.y,RAIO*UC,RAIO*UC);
+  
+  if(v_y == 0){
+    v0_y = v0_y * -1;
+    h0 = h;
+    t_2 = 1;
   }
+  else if(h >= 0){
+    v0_y = v0_y * -1;
+    h0 = -PARTICLE_OFFSET;
+    t_2 = 1;
+  }
+  
+  // Updating the internal times (used to calculate the current particle's position)
+  t_1 += 1;
+  t_2 += 1;
 }

@@ -2,7 +2,7 @@ color RED = color(255, 0, 0);
 color GREEN = color(0, 255, 0);
 color BLUE = color(0, 0, 255);
 
-int curve_counter = 1, FPS = 120;
+int curve_counter = 1, FPS = 60;
 float radius = 20, theta = 180;
 float velocity = (180 * radius ) / (FPS * 4);
 float OMEGA = velocity / radius;
@@ -36,10 +36,7 @@ void setup() {
   old_pos_y = 0.0;
 }
 
-void draw() { 
-  // Updating the theta
-  theta -= OMEGA;
-  
+void draw() {  
   // Calculating the current point position
   pos_x = radius * cos(radians(theta));
   pos_y = radius * sin(radians(theta));
@@ -72,10 +69,13 @@ void draw() {
     pos_x = radius * cos(radians(theta));
     old_pos_x = pos_x;
   }  
+  
+  // Updating the theta
+  theta -= OMEGA;
 }
 
 int crossedOX(){
-  if ((theta % 180 == 0.0) || (theta == 0.0))
+  if (((theta % 180 == 0.0) || (theta == 0.0)) && theta != 180)
     return 1;
   return 0;
 }
