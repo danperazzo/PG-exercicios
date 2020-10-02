@@ -18,18 +18,18 @@ void draw() {
   
   background(255);
   // JUST DOING SOME TRANSFORMATIONS TO AID VISUALIZATIONS
-  translate(width/2, height/2, -100);
-  rotateY(PI/3);
-  rotateZ(PI/3-0.1);
-  rotateZ(PI/3+PI/6);
+  translate(width/2, height/2, -50);
+  rotateX(PI/2-PI/4);
+  rotateZ(PI/2+PI/6);
+
   
-  stroke(GREEN); //AXIS X
+  stroke(RED); //AXIS X
   line(0,0,1000,0);
   
-  stroke(RED); // AXIS Y
+  stroke(BLUE); // AXIS Y
   line(0,0,0,1000);
   
-  stroke(BLUE); // AXIS Z
+  stroke(GREEN); // AXIS Z
   line(0,0,0,0,0,1000);
   
   // ENDING VISUALIZER HELP, NOW WILL START DOING THIS QUESTION
