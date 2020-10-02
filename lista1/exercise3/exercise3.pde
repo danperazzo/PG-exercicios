@@ -1,6 +1,6 @@
-color RED = color(255, 0, 0);
-color GREEN = color(0, 255, 0);
-color BLUE = color(0, 0, 255);
+color GREEN = color(113,184,94);
+color RED = color(199, 12, 12);
+color BLUE = color(3,119,252);
 
 int curve_counter = 1, FPS = 60;
 float radius = 20, theta = 180;
@@ -19,6 +19,7 @@ void setup() {
   background(200);
   
   // Drawing x-axis
+  strokeWeight(2);
   stroke(BLUE);
   line(0, center_y, width, center_y);
   

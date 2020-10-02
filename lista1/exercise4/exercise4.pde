@@ -1,5 +1,5 @@
-color RED = color(255, 0, 0);
-color BLUE = color(0, 0, 255);
+color RED = color(199, 12, 12);
+color BLUE = color(3,119,252);
 
 int UC = 2,  FPS = 30;
 float RADIUS_COUT = 100 * UC, RADIUS_CIN = 25 * UC, RADIUS_CINTER = RADIUS_COUT - RADIUS_CIN;

@@ -1,5 +1,5 @@
-color RED = color(255, 0, 0);
-color BLUE = color(0, 0, 255);
+color RED = color(199, 12, 12);
+color BLUE = color(3,119,252);
 
 int FPS = 60, TRAJECTORY_X = 360;
 float UC = 0.25;
