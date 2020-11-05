@@ -23,20 +23,19 @@
 
 <p>Exibir/Esconder itens:</p>
 <div>
-  <input type="checkbox" id="control_points" name="scales"
-         checked>
-  <label for="scales">Pontos de controle</label>
+  <input type="checkbox" id="control_points" name="control_points">
+  <label for="control_points">Pontos de controle</label>
 </div>
 
 <div>
-  <input type="checkbox" id="polygons" name="horns">
-  <label for="horns">Poligonos de controle</label>
+  <input type="checkbox" id="polygons" name="polygons">
+  <label for="polygons">Poligonos de controle</label>
 </div>
 
 <div>
-    <input type="checkbox" id="curves" name="scales"
+    <input type="checkbox" id="curves" name="curves"
            >
-    <label for="scales">Curvas</label>
+    <label for="curves">Curvas</label>
   </div>
   
 
@@ -110,14 +109,19 @@
       for (k=1;k<control_points.length;k++){
         draw_line(control_points[k-1],control_points[k])
       }
+    }
 
-
+    if(chkCntrlPnt.checked){
+      for (k=0;k<control_points.length;k++){
+        context.fillRect(control_points[k][0]-2,control_points[k][1]-2,4,4); // fill in the pixel at (10,10)
+      }
     }
   
   };
 
   document.getElementById("curves").onclick = function_draw;
   document.getElementById("polygons").onclick = function_draw;
+  document.getElementById("control_points").onclick = function_draw;
   
 
 
