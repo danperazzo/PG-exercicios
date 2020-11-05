@@ -23,19 +23,19 @@
 
 <p>Exibir/Esconder itens:</p>
 <div>
-  <input type="checkbox" id="scales" name="scales"
+  <input type="checkbox" id="control_points" name="scales"
          checked>
   <label for="scales">Pontos de controle</label>
 </div>
 
 <div>
-  <input type="checkbox" id="horns" name="horns">
+  <input type="checkbox" id="polygons" name="horns" value="on">
   <label for="horns">Poligonos de controle</label>
 </div>
 
 <div>
-    <input type="checkbox" id="scales" name="scales"
-           checked>
+    <input type="checkbox" id="curves" name="scales"
+           value="on">
     <label for="scales">Curvas</label>
   </div>
   
@@ -75,19 +75,35 @@
 
   }
 
-  var div_t = [ 0,0.2,0.4,0.6,0.8,1]
-  var control_points = [[100,0],[0,100],[100,100]]
-  var len = div_t.length
+  var chkCurve = document.getElementById("curves");
 
-  var points = []
-  for (j=0;j<len;j++){
-    var point = get_point_bezier(control_points, div_t[j])
-    points.push(point)
-  }
+  document.getElementById("curves").onclick = function () {
 
-  for (k=1;k<len;k++){
-    draw_line(points[k-1],points[k])
-  }
+    if (chkCurve.checked) {
+      var div_req = 5
+      var div_t = []
+      for(q=0;q<=5;q++){
+        div_t.push(q/5)
+      }
+    
+      var control_points = [[100,0],[0,100],[100,100]]
+      var len = div_t.length
+    
+      var points = []
+      for (j=0;j<len;j++){
+        var point = get_point_bezier(control_points, div_t[j])
+        points.push(point)
+      }
+    
+      for (k=1;k<len;k++){
+        draw_line(points[k-1],points[k])
+      }
+    }
+    else{
+      const context = canvas.getContext('2d');
+      context.clearRect(0, 0, canvas.width, canvas.height);
+    } 
+};
 
 
 
