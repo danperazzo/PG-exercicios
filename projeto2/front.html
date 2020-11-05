@@ -29,13 +29,13 @@
 </div>
 
 <div>
-  <input type="checkbox" id="polygons" name="horns" value="on">
+  <input type="checkbox" id="polygons" name="horns">
   <label for="horns">Poligonos de controle</label>
 </div>
 
 <div>
     <input type="checkbox" id="curves" name="scales"
-           value="on">
+           >
     <label for="scales">Curvas</label>
   </div>
   
@@ -76,8 +76,15 @@
   }
 
   var chkCurve = document.getElementById("curves");
+  var chkPoly = document.getElementById("polygons");
+  var chkCntrlPnt = document.getElementById("control_points");
+  var control_points = [[100,0],[0,100],[100,100]]
 
-  document.getElementById("curves").onclick = function () {
+  var function_draw = function () {
+
+    var c = document.getElementById("myCanvas");
+    const context = c.getContext('2d');
+    context.clearRect(0, 0, c.width, c.height);
 
     if (chkCurve.checked) {
       var div_req = 5
@@ -86,7 +93,6 @@
         div_t.push(q/5)
       }
     
-      var control_points = [[100,0],[0,100],[100,100]]
       var len = div_t.length
     
       var points = []
@@ -99,12 +105,20 @@
         draw_line(points[k-1],points[k])
       }
     }
-    else{
-      var c = document.getElementById("myCanvas");
-      const context = c.getContext('2d');
-      context.clearRect(0, 0, c.width, c.height);
-    } 
-};
+
+    if(chkPoly.checked){
+      for (k=1;k<control_points.length;k++){
+        draw_line(control_points[k-1],control_points[k])
+      }
+
+
+    }
+  
+  };
+
+  document.getElementById("curves").onclick = function_draw;
+  document.getElementById("polygons").onclick = function_draw;
+  
 
 
 
