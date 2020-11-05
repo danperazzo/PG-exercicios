@@ -6,6 +6,8 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
+<canvas id="myCanvas" width="300" height="150" style="border:1px solid #d3d3d3;">
+    Your browser does not support the HTML5 canvas tag.</canvas>
 
 <h1>Projeto 2 - Curvas de Bezier</h1>
 
@@ -20,7 +22,6 @@
 <button>right</button>
 
 <p>Exibir/Esconder itens:</p>
-
 <div>
   <input type="checkbox" id="scales" name="scales"
          checked>
@@ -39,6 +40,67 @@
   </div>
   
 
-<script src="casteuju.js"></script>
+<script>
+  function get_point_bezier(P, t) {
+
+  var len = P.length
+    
+  if (len ==1){
+      return P[0]
+  }
+  
+  var intert_P = []
+  
+  for (i=1;i<len;i++){
+  
+      P_x = P[i][0]*t+P[i-1][0]*(1-t)
+      P_y = P[i][1]*t+P[i-1][1]*(1-t)
+      
+      intert_P.push([P_x,P_y])
+  
+  }
+  
+  return get_point_bezier(intert_P, t)
+  } 
+  
+
+
+  function draw_line(P1,P2){
+    var c = document.getElementById("myCanvas");
+    var ctx = c.getContext("2d");
+    ctx.beginPath();
+    ctx.moveTo(P1[0], P1[1]);
+    ctx.lineTo(P2[0], P2[1]);
+    ctx.stroke();
+
+  }
+
+  function draw_bezier_real(){
+    var c = document.getElementById("myCanvas");
+    var ctx = c.getContext("2d");
+    ctx.beginPath();
+    ctx.moveTo(100, 0);
+    ctx.quadraticCurveTo(0, 100, 100, 100);
+    ctx.stroke();
+  }
+  
+  var div_t = [ 0,0.2,0.4,0.6,0.8,1]
+  var control_points = [[100,0],[0,100],[100,100]]
+  var len = div_t.length
+  var points = []
+  for (j=0;j<len;j++){
+    var point = get_point_bezier(control_points, div_t[j])
+    points.push(point)
+  }
+
+  for (k=1;k<len;k++){
+    draw_line(points[k-1],points[k])
+  }
+  draw_bezier_real()
+
+
+
+
+</script>
 </body>
 </html>
