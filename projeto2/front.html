@@ -11,9 +11,9 @@
 
 <h1>Projeto 2 - Curvas de Bezier</h1>
 
-<button>Criar nova curva</button>
-<button>Deletar curva atual</button>
-<button>Editar curva atual</button>
+<button id="new_curve"  onclick="on_push()">Criar nova curva</button>
+<button id="delete_curve">Deletar curva atual</button>
+<button id="edit_curve">Editar curva atual</button>
 <!-- Interação com as curvas, permitindo inserir, modificar e deletar pontos de controle -->
 
 <p>Alternar Curvas:</p>
@@ -40,6 +40,7 @@
   
 
 <script>
+  //control_points = [[[100,0],[0,100],[100,100]]]
   function get_point_bezier(P, t) {
 
   var len = P.length
@@ -73,58 +74,66 @@
     ctx.stroke();
 
   }
-
+  
   var chkCurve = document.getElementById("curves");
   var chkPoly = document.getElementById("polygons");
   var chkCntrlPnt = document.getElementById("control_points");
-  var control_points = [[100,0],[0,100],[100,100]]
+  var num_curves = control_points.length
 
   var function_draw = function () {
 
     var c = document.getElementById("myCanvas");
     const context = c.getContext('2d');
     context.clearRect(0, 0, c.width, c.height);
+    for (d=0;d<num_curves;d++){
+      
+      var control_points_i = control_points[d]
 
-    if (chkCurve.checked) {
-      var div_req = 5
-      var div_t = []
-      for(q=0;q<=5;q++){
-        div_t.push(q/5)
+      if (chkCurve.checked) {
+        var div_req = 5
+        var div_t = []
+        for(q=0;q<=5;q++){
+          div_t.push(q/5)
+        }
+      
+        var len = div_t.length
+      
+        var points = []
+        for (j=0;j<len;j++){
+          var point = get_point_bezier(control_points_i, div_t[j])
+          points.push(point)
+        }
+      
+        for (k=1;k<len;k++){
+          draw_line(points[k-1],points[k])
+        }
       }
-    
-      var len = div_t.length
-    
-      var points = []
-      for (j=0;j<len;j++){
-        var point = get_point_bezier(control_points, div_t[j])
-        points.push(point)
-      }
-    
-      for (k=1;k<len;k++){
-        draw_line(points[k-1],points[k])
-      }
-    }
 
-    if(chkPoly.checked){
-      for (k=1;k<control_points.length;k++){
-        draw_line(control_points[k-1],control_points[k])
+      if(chkPoly.checked){
+        for (k=1;k<control_points_i.length;k++){
+          draw_line(control_points_i[k-1],control_points_i[k])
+        }
       }
-    }
 
-    if(chkCntrlPnt.checked){
-      for (k=0;k<control_points.length;k++){
-        context.fillRect(control_points[k][0]-2,control_points[k][1]-2,4,4); // fill in the pixel at (10,10)
+      if(chkCntrlPnt.checked){
+        for (k=0;k<control_points_i.length;k++){
+          context.fillRect(control_points_i[k][0]-2,control_points_i[k][1]-2,4,4); // fill in the pixel at (10,10)
+        }
       }
     }
   
   };
-
+  
+  function on_push() {
+    control_points.push([[50,0],[0,100],[100,100]]);
+  }
+  
   document.getElementById("curves").onclick = function_draw;
   document.getElementById("polygons").onclick = function_draw;
   document.getElementById("control_points").onclick = function_draw;
+
+  run = true
   
-
-
 
 
 </script>
