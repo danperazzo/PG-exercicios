@@ -75,18 +75,10 @@
 
   }
 
-  function draw_bezier_real(){
-    var c = document.getElementById("myCanvas");
-    var ctx = c.getContext("2d");
-    ctx.beginPath();
-    ctx.moveTo(100, 0);
-    ctx.quadraticCurveTo(0, 100, 100, 100);
-    ctx.stroke();
-  }
-  
   var div_t = [ 0,0.2,0.4,0.6,0.8,1]
   var control_points = [[100,0],[0,100],[100,100]]
   var len = div_t.length
+
   var points = []
   for (j=0;j<len;j++){
     var point = get_point_bezier(control_points, div_t[j])
@@ -96,7 +88,6 @@
   for (k=1;k<len;k++){
     draw_line(points[k-1],points[k])
   }
-  draw_bezier_real()
 
 
 
