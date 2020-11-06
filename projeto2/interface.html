@@ -47,7 +47,7 @@
 
 <script>
   var control_points = [];
-  var div_req = 3;
+  var div_req = [];
   var found = false;
   var draggingPoint = false;
   var moving_point = -1;
@@ -148,8 +148,8 @@
 
       if (chkCurve.checked) {
         var div_t = [];
-        for(var q = 0; q <= div_req; q++){
-          div_t.push(q / div_req);
+        for(var q = 0; q <= div_req[d]; q++){
+          div_t.push(q / div_req[d]);
         }
       
         var len = div_t.length;
@@ -182,6 +182,7 @@
 
   function add_curve(){
     control_points.push([[50,0],[0,100],[100,100]]);
+    div_req.push(3)
     current_curve = total;
     total += 1;
     function_draw();
@@ -189,6 +190,7 @@
   
   function delete_curve(){
     control_points.splice(current_curve,1);
+    div_req.splice(current_curve,1)
     if (total > -1){
       total -= 1;
       current_curve = total - 1;
@@ -199,7 +201,7 @@
   function enter_resolution() {
     var inp = prompt("Por favor, insira a quantidade de pontos avaliados", "3");
     if (inp != null) {
-      div_req = parseInt(inp, 10)
+      div_req[current_curve] = parseInt(inp, 10)
     }
     function_draw()
   }
