@@ -15,8 +15,8 @@
 <button onclick="remove_control_points()">Deletar curva atual</button>
 <button id="edit_curve">Editar curva atual</button>
 
-<button onclick="increase_resolution()">Aumentar resolução</button>
-<button onclick="decrease_resolution()">Diminuir resolução</button>
+<button onclick="enter_resolution()">Coloque a resolução</button>
+
 <!-- Interação com as curvas, permitindo inserir, modificar e deletar pontos de controle -->
 
 <p>Alternar Curvas:</p>
@@ -142,13 +142,12 @@
     function_draw()
   }
 
-  function increase_resolution(){
-    div_req = div_req +3
-    function_draw()
-  }
 
-  function decrease_resolution(){
-    div_req = Math.max(div_req -3,0)
+  function enter_resolution() {
+    var inp = prompt("Por favor, insira a quantidade de pontos avaliados", "3");
+    if (inp != null) {
+      div_req = parseInt(inp, 10)
+    }
     function_draw()
   }
   
