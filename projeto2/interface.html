@@ -6,9 +6,9 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-<canvas id="myCanvas" width="400" height="200" style="border:1px solid #d3d3d3;"></canvas>
+<canvas id="myCanvas" width="600" height="600" style="border:1px solid rgb(240, 236, 236);"></canvas>
 
-<h1>Projeto 2 - Curvas de Bezier</h1>
+<h1 style= "font: 'Andale Mono', monospace;">Projeto 2 - Curvas de Bezier</h1>
 
 <p>
 <button onclick="add_curve()">Criar nova curva</button>
@@ -31,7 +31,7 @@
 
 <p>Exibir/Esconder itens:</p>
 <div>
-  <input type="checkbox" id="control_points" name="control_points">
+  <input type="checkbox" id="control_points" name="control_points", value="on">
   <label for="control_points">Pontos de controle</label>
 </div>
 
@@ -41,7 +41,7 @@
 </div>
 
 <div>
-    <input type="checkbox" id="curves" name="curves">
+    <input type="checkbox" id="curves" name="curves", value="on">
     <label for="curves">Curvas</label>
 </div>
 
@@ -56,7 +56,7 @@
   var current_curve = -1;
   var total = 0;
   var red = '#FF0000';
-  var black = '#000000';
+  var white = '#ECF0EC';
   
       
   var chkCurve = document.getElementById("curves");
@@ -141,7 +141,7 @@
     for (var d = 0; d < num_curves; d++){
       
       var control_points_i = control_points[d];
-      var color = black;
+      var color = white;
       if (d == current_curve){
         color = red;
       }
@@ -275,7 +275,7 @@ function mouseUp(mouseX, mouseY) {
 }
 
 function decrease_cur_curve(){
-  if (current_curve > 0)
+  if (current_curve > -1)
     current_curve -= 1;
   function_draw();
 }
