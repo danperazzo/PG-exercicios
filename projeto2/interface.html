@@ -85,24 +85,26 @@
 
   function get_point_bezier(P, t) {
     
-    var len = P.length;
-    
-    if (len ==1){
-      return P[0]
+    let len = P.length;
+
+    let clone_P = []
+    for (i=0;i<len;i++){
+      clone_P.push([P[i][0],P[i][1]  ])
     }
-    
-    var intert_P = [];
-    
-    for (i=1;i<len;i++){
+    for (j=len-1;j>0;j--){
+
+      for (i=0;i<j;i++){
       
-      P_x = P[i][0]*t+P[i-1][0]*(1-t);
-      P_y = P[i][1]*t+P[i-1][1]*(1-t);
+        clone_P[i][0] =  clone_P[i+1][0]*t+clone_P[i][0]*(1-t)
+        clone_P[i][1] =  clone_P[i+1][1]*t+clone_P[i][1]*(1-t)
       
-      intert_P.push([P_x,P_y]);
-      
+      }
+
     }
+    let res = clone_P[0]
+    clone_P.splice(0,len)
     
-    return get_point_bezier(intert_P, t)
+    return res
   } 
    
   function draw_line(P1,P2, color, width){
