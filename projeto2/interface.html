@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <link rel="stylesheet" href="styles.css">
+<title>Título da página</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<canvas id="myCanvas" width="400" height="200" style="border:1px solid #d3d3d3;"></canvas>
+
+<h1>Projeto 2 - Curvas de Bezier</h1>
+
+<p>
+<button onclick="add_curve()">Criar nova curva</button>
+<button onclick="delete_curve()">Deletar curva atual</button>
+</p>
+
+<p>
+  <button onclick="enter_resolution()">Coloque a resolução</button>
+</p>
+
+<!-- Interação com as curvas, permitindo inserir, modificar e deletar pontos de controle -->
+<p>
+<button onclick="add_control_point()">Adicionar ponto de controle</button>
+<button onclick="remove_control_point()">Remover ponto de controle</button>
+</p>
+
+<p>Alternar Curvas:</p>
+<button onclick="decrease_cur_curve()">left</button>
+<button onclick="increase_cur_curve()">right</button>
+
+<p>Exibir/Esconder itens:</p>
+<div>
+  <input type="checkbox" id="control_points" name="control_points">
+  <label for="control_points">Pontos de controle</label>
+</div>
+
+<div>
+  <input type="checkbox" id="polygons" name="polygons">
+  <label for="polygons">Poligonos de controle</label>
+</div>
+
+<div>
+    <input type="checkbox" id="curves" name="curves">
+    <label for="curves">Curvas</label>
+</div>
+
+<script>
+  var control_points = [];
+  var div_req = 3;
+  var found = false;
+  var draggingPoint = false;
+  var moving_point = -1;
+  var addingPoint = false;
+  var removingPoint = false;
+  var current_curve = -1;
+  var total = 0;
+  var red = '#FF0000';
+  var black = '#000000';
+  
+      
+  var chkCurve = document.getElementById("curves");
+  var chkPoly = document.getElementById("polygons");
+  var chkCntrlPnt = document.getElementById("control_points");
+
+
+  var c = document.getElementById('myCanvas');
+
+  c.addEventListener('mousemove', function(evt) {
+    mousePos = mouseMoving(c, evt);
+    }, false);
+
+  c.addEventListener('click', function(){
+    mousePressed(mousePos.x, mousePos.y);
+  });
+
+  c.addEventListener('mousedown',  function(){
+    mouseDown(mousePos.x, mousePos.y);
+  });
+
+  c.addEventListener('mouseup', function(){
+    mouseUp(mousePos.x, mousePos.y);
+  });
+
+
+  function get_point_bezier(P, t) {
+    
+    var len = P.length;
+    
+    if (len ==1){
+      return P[0]
+    }
+    
+    var intert_P = [];
+    
+    for (i=1;i<len;i++){
+      
+      P_x = P[i][0]*t+P[i-1][0]*(1-t);
+      P_y = P[i][1]*t+P[i-1][1]*(1-t);
+      
+      intert_P.push([P_x,P_y]);
+      
+    }
+    
+    return get_point_bezier(intert_P, t)
+  } 
+   
+  function draw_line(P1,P2, color, width){
+    var canvas = document.getElementById("myCanvas");
+    var context = canvas.getContext("2d");
+    context.beginPath();
+    context.moveTo(P1[0], P1[1]);
+    context.lineTo(P2[0], P2[1]);
+    context.lineWidth = width;
+    context.strokeStyle = color;
+    context.stroke();
+  }
+
+  function draw_circle(X,Y,R, color){
+    var canvas = document.getElementById("myCanvas");
+    var context = canvas.getContext("2d");
+    context.beginPath();
+    context.arc(X, Y, R, 0, 2 * Math.PI, false);
+    context.strokeStyle = color;
+    context.stroke();
+    context.fillStyle = color;
+    context.fill(); 
+  }
+
+  function dist(X1, Y1, X2, Y2){
+    return Math.sqrt(Math.pow((X1-X2), 2) + Math.pow((Y1-Y2), 2))
+  }
+   
+  function function_draw () {
+    var canvas = document.getElementById("myCanvas");
+    var context = canvas.getContext("2d");
+    var num_curves = control_points.length;
+    
+    context.clearRect(0, 0, c.width, c.height);
+
+    for (var d = 0; d < num_curves; d++){
+      
+      var control_points_i = control_points[d];
+      var color = black;
+      if (d == current_curve){
+        color = red;
+      }
+
+      if (chkCurve.checked) {
+        var div_t = [];
+        for(var q = 0; q <= div_req; q++){
+          div_t.push(q / div_req);
+        }
+      
+        var len = div_t.length;
+      
+        var points = [];
+        for (var j = 0; j < len; j++){
+          var point = get_point_bezier(control_points_i, div_t[j]);
+          points.push(point);
+        }
+      
+        for (var k=1;k<len;k++){
+          draw_line(points[k-1], points[k], color, 2);
+        }
+      }
+
+      if (chkPoly.checked){
+        for (var k = 1; k < control_points_i.length; k++){
+          draw_line(control_points_i[k-1], control_points_i[k], color, 1);
+        }
+      }
+
+      if (chkCntrlPnt.checked){
+        for (var k=0; k < control_points_i.length; k++){
+          draw_circle(control_points_i[k][0], control_points_i[k][1], 4, color);
+        }
+      }
+    }
+    return 0;
+  };
+
+  function add_curve(){
+    control_points.push([[50,0],[0,100],[100,100]]);
+    current_curve = total;
+    total += 1;
+    function_draw();
+  }
+  
+  function delete_curve(){
+    control_points.splice(current_curve,1);
+    if (total > -1){
+      total -= 1;
+      current_curve = total - 1;
+    }
+    function_draw();
+  }
+
+  function enter_resolution() {
+    var inp = prompt("Por favor, insira a quantidade de pontos avaliados", "3");
+    if (inp != null) {
+      div_req = parseInt(inp, 10)
+    }
+    function_draw()
+  }
+  
+  function add_control_point(){
+    addingPoint = true;
+  }
+
+  function remove_control_point(){
+    removingPoint = true;
+  }
+
+  function mouseMoving(canvas, evt){
+    var rect = canvas.getBoundingClientRect();
+    draggingPoint = true;
+    pos_x = evt.clientX - rect.left;
+    pos_y = evt.clientY - rect.top;
+
+    if (found){
+        control_points[current_curve][moving_point_id] = [pos_x, pos_y];
+        function_draw();
+    }
+    return{
+        x: pos_x,
+        y: pos_y
+    }
+  }
+
+  function mousePressed(mouseX, mouseY) {
+  if (addingPoint) {
+    addingPoint = false;
+    if (mouseX <= c.width && mouseY <= c.height) {
+      control_points[current_curve].push([mouseX, mouseY]);
+      function_draw();
+    }
+  } else if (removingPoint) {
+    removingPoint = false;
+    var control_points_aux = []
+    for (var i = 0; i <= control_points[current_curve].length; i++){
+      const d = dist(control_points[current_curve][i][0], control_points[current_curve][i][1], mouseX, mouseY);
+      if (d < 4){
+        control_points[current_curve].splice(i,1);
+        function_draw();
+      }
+    }    
+  } 
+}
+
+function mouseDown(mouseX, mouseY) {
+  if (!addingPoint && !removingPoint) {
+    for (var i = 0; i <= control_points[current_curve].length && !(found); i++) {
+      const d = dist(control_points[current_curve][i][0], control_points[current_curve][i][1], mouseX, mouseY);
+      if (d < 4) {
+        control_points[current_curve][i] = [mouseX, mouseY];
+        moving_point_id = i;
+        found = true;
+        draggingPoint = false;
+        function_draw();
+      }
+    }
+  }
+}
+
+function mouseUp(mouseX, mouseY) {
+  if (!addingPoint && !removingPoint) {
+    if (found && draggingPoint){
+      control_points[current_curve][moving_point_id] = [mouseX, mouseY];
+      function_draw();      
+    } 
+    moving_point_id = -1;
+    found = false;   
+  }
+}
+
+function decrease_cur_curve(){
+  if (current_curve > 0)
+    current_curve -= 1;
+  function_draw();
+}
+
+function increase_cur_curve(){
+  if (current_curve < total - 1)
+    current_curve += 1;
+  function_draw();
+}
+
+  document.getElementById("curves").onclick = function_draw;
+  document.getElementById("polygons").onclick = function_draw;
+  document.getElementById("control_points").onclick = function_draw; 
+
+</script>
+</body>
+</html>
