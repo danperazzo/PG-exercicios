@@ -16,8 +16,8 @@ void specularphong(PVector Im,float Ks,PVector N,PVector L,PVector V, PVector RG
   // Compute R = 2*(N.L)*N - L 
   PVector R = PVector.sub(PVector.mult(N,2.0*N.dot(L)),L);
   
-  // Equation is Im*Ks*(R.L)^9
-  float R_L =(float)Math.pow((double)R.dot(L),9.0);
+  // Equation is Im*Ks*(R.V)^9
+  float R_L =(float)Math.pow((double)R.dot(V),9.0);
   
   
   RGB_im.x += Ks*R_L*Im.x;
