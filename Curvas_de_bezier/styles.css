@@ -1,0 +1,31 @@
+p,
+label {
+    font: 1rem 'Andale Mono', monospace;
+    color: hsl(210, 10%, 62%);
+}
+
+input {
+    margin: .4rem;
+}
+
+body {
+background-color: rgb(10, 10, 10);
+color:rgb(240, 236, 236);
+}
+@media screen and (prefers-color-scheme: light) {
+body {
+    background-color: rgb(31, 29, 29);
+    color: black;
+}
+}
+
+button {
+    transition-duration: 0.4s;
+    border-radius: 6px;
+  }
+  
+button:hover {
+background-color: #434347; 
+color: white;
+border-radius: 6px;
+}
