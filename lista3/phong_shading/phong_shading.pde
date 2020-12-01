@@ -53,6 +53,30 @@ PImage finalImage;
 // Initialize directional light vector
 PVector direc_light;
 
+// Initialize V vector
+PVector V;
+
+void change_image(){
+  
+  // Iterate on image pixels
+  for(int i=0;i<width;i++){
+    for(int j=0;j<height;j++){
+      
+      // Change V vector based on image pixels
+      V.x = (float)i - width/2;
+      V.y = (float)j - height/2;
+      
+      // Now, Nati, change image
+      
+      print(V);
+      print("\n");
+      
+    }
+  }
+  
+}
+
+
 void setup() {
   
   // Initialize Image and vector
@@ -65,7 +89,10 @@ void setup() {
   mapSpec = loadImage("Texturas/char1_s.png");
     
   // Initialize Directional light
-  direc_light = new PVector(0.0,0.0,0.0);
+  direc_light = new PVector(0.0,0.0,1.0);
+  
+  // Initialize V vector
+  V = new PVector(0.0,0.0,1.0);
   
   // Initialize final image
   finalImage = createImage(396, 600, RGB);
@@ -78,8 +105,11 @@ void draw() {
   direc_light.x =  width/2 - mouseX;
   direc_light.y = height/2 - mouseY;
   
-  // Print for debugging
-  print(direc_light);
-  print("\n");
+  // Change Image based on phong
+  change_image();
+  
+  // Draw image
+  image(finalImage,0,0);
+  
 }
      
