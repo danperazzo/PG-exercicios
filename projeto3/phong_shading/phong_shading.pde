@@ -1,4 +1,28 @@
-  
+
+// Initialize texture maps
+PImage base;                    // RGB_im
+PImage mapNorm;                 // N
+PImage mapSpec;                 // Ks
+
+// Initialize final image
+PImage finalImage;
+
+// Initialize directional light vector
+PVector direc_light;
+PVector cur_im;
+
+PVector RGB_im;
+
+// Initialize V vector
+PVector V;
+
+// Color channel option
+int color_mode = 0;
+
+// Show images options
+boolean show_diffuse = false, show_specular = false;
+
+
 // Function to comput diffuse phong component
 void diffusephong(PVector Im, PVector Kd, PVector N, PVector L) {
   
@@ -33,45 +57,16 @@ void phong(PVector Im, PVector Ks, PVector Kd, PVector N, PVector L, PVector V){
   N.normalize();
   L.normalize();
   
-  
   // Compute Specular and Diffuse Phong. Initialize RGB value as 0 vector and sum vector in functions
   // Phong color = Specular_component + diffuse_component
   RGB_im = new PVector(0.0,0.0,0.0);
-  specularphong(Im,Ks,N, L, V);
-  //print(RGB_im,"\n");
-  diffusephong(Im,Kd,N,L);
-  
+  if (show_specular)
+    specularphong(Im,Ks,N, L, V);
+  if (show_diffuse)
+    diffusephong(Im,Kd,N,L);
 }
 
-// Initialize texture maps
-PImage base;                    // RGB_im
-PImage mapNorm;                 // N
-PImage mapSpec;                 // Ks
-
-// Initialize final image
-PImage finalImage;
-
-// Initialize directional light vector
-PVector direc_light;
-PVector cur_im;
-
-PVector RGB_im;
-
-// Initialize V vector
-PVector V;
-
-int i = 0, color_mode = 0;
 void change_image(){
-  
-  //int lenImage = width*height;
-  //PImage myImage = loadImage("apples.jpg");
-  //image(myImage, 0, 0);
-  
-  //loadPixels();
-  //for (int i = 0; i < lenImage; i++) {
-  //  pixels[i+lenImage] = pixels[i];
-  //}
-  //updatePixels();
 
   // Iterate on image pixels
   for(int i=0;i<width;i++){
@@ -82,8 +77,6 @@ void change_image(){
       V.y = (float)j - height/2;
       V.z = 1.0;
       
-      // Now, Nati, change image
-      //PVector v_out = new PVector(0.0,0.0,0.0);
       RGB_im.x = 0.0;
       RGB_im.y = 0.0;
       RGB_im.z = 0.0;
@@ -149,7 +142,7 @@ void keyPressed() {
       color_mode = 0;
   }
  
-  if (key == CODED){
+  else if (key == CODED){
     if (color_mode != 0){
       if (keyCode == UP) {
         if (color_mode == 'R' || color_mode == 'r'){
@@ -175,22 +168,12 @@ void keyPressed() {
       }
     }
   }
-    
-  //  if (key == CODED) {
-  //    if (keyCode == UP) {
-        
-  //    }
-  //  keyIndex = key - 'A';
-  //} else if (key >= 'a' && key <= 'z') {
-  //  keyIndex = key - 'a';
-  //}
-  //if (keyIndex == -1) {
-  //  // If it's not a letter key, clear the screen
-  //  background(0);
-  //} else { 
-  //  // It's a letter key, fill a rectangle
-  //  fill(millis() % 255);
-  //  float x = map(keyIndex, 0, 25, 0, width - rectWidth);
-  //  rect(x, 0, rectWidth, height);
-  //}
+  
+  else if (key == 'D' || key == 'd'){
+    show_diffuse = !(show_diffuse);
+  }
+  
+  else if (key == 'S' || key == 's'){
+    show_specular = !(show_specular);
+  }
 }
