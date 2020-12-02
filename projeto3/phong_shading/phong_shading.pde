@@ -3,7 +3,7 @@
 void diffusephong(PVector Im, PVector Kd, PVector N, PVector L) {
   
   // Diffuse phong is Ks*(N.L)*Im
-  float N_L = N.dot(L);
+  float N_L = max(0.0,N.dot(L));
   
   RGB_im.x = RGB_im.x + N_L*Kd.x*Im.x;
   RGB_im.y = RGB_im.y + N_L*Kd.y*Im.y;
@@ -14,7 +14,7 @@ void diffusephong(PVector Im, PVector Kd, PVector N, PVector L) {
 void specularphong(PVector Im, PVector Ks, PVector N, PVector L, PVector V){
   
   // Compute R = 2*(N.L)*N - L 
-  PVector R = PVector.sub(PVector.mult(N,2.0*N.dot(L)),L);
+  PVector R = PVector.sub(PVector.mult(N,2.0*(max(0.0,N.dot(L)))),L);
   
   // Equation is Im*Ks*(R.V)^q, where q=9 
   float R_L =(float)Math.pow((double)R.dot(V),9.0);
@@ -32,6 +32,7 @@ void phong(PVector Im, PVector Ks, PVector Kd, PVector N, PVector L, PVector V){
   V.normalize();
   N.normalize();
   L.normalize();
+  
   
   // Compute Specular and Diffuse Phong. Initialize RGB value as 0 vector and sum vector in functions
   // Phong color = Specular_component + diffuse_component
@@ -59,7 +60,7 @@ PVector RGB_im;
 // Initialize V vector
 PVector V;
 
-int i = 0;
+int i = 0, color_mode = 0;
 void change_image(){
   
   //int lenImage = width*height;
@@ -87,15 +88,17 @@ void change_image(){
       RGB_im.y = 0.0;
       RGB_im.z = 0.0;
       
-      PVector v_spec = new PVector(red(mapSpec.get(i,j)), green(mapSpec.get(i,j)), blue(mapSpec.get(i,j)));
-      PVector v_base = new PVector(red(base.get(i,j)), green(base.get(i,j)), blue(base.get(i,j)));
-      PVector v_norm = new PVector(red(mapNorm.get(i,j)), green(mapNorm.get(i,j)), blue(mapNorm.get(i,j)));
+      color c_spec = mapSpec.get(i,j);
+      color c_base = base.get(i,j);
+      color c_norm = mapNorm.get(i,j);
+      
+      PVector v_spec = new PVector(red(c_spec), green(c_spec), blue(c_spec));
+      PVector v_base = new PVector(red(c_base), green(c_base), blue(c_base));
+      PVector v_norm = new PVector(red(c_norm), green(c_norm), blue(c_norm));
       
       phong(cur_im, v_spec, v_base, v_norm, direc_light, V);
       color final_color = color(int(RGB_im.x), int(RGB_im.y), int(RGB_im.z));
-      finalImage.set(i,j,final_color);    
-      //print(RGB_im,"\n");
-      
+      finalImage.set(i,j,final_color);          
     }
   }
 }
@@ -114,7 +117,7 @@ void setup() {
     
   // Initialize Directional light
   direc_light = new PVector(0.0,0.0,1.0);
-  cur_im = new PVector(100.0,100.,100.);
+  cur_im = new PVector(1.,1.,1.);
   
   // Initialize V vector
   V = new PVector(0.0,0.0,1.0);
@@ -134,7 +137,60 @@ void draw() {
   change_image();
   
   // Draw image
-  image(finalImage,0,0);
-  
+  image(finalImage,0,0);  
 }
-     
+
+
+void keyPressed() {
+  if (key == 'R' || key == 'r' || key == 'G' || key == 'g' || key == 'B' || key == 'b'){
+    if (color_mode == 0)
+      color_mode = key;
+    else 
+      color_mode = 0;
+  }
+ 
+  if (key == CODED){
+    if (color_mode != 0){
+      if (keyCode == UP) {
+        if (color_mode == 'R' || color_mode == 'r'){
+          cur_im.x = min(1.0, cur_im.x+0.1);
+        }
+        else if (color_mode == 'G' || color_mode == 'g'){
+          cur_im.y = min(1.0, cur_im.y+0.1);
+        }
+        else if (color_mode == 'B' || color_mode == 'b'){
+          cur_im.z = min(1.0, cur_im.z+0.1);
+        }
+      }
+      else if (keyCode == DOWN){
+        if (color_mode == 'R' || color_mode == 'r'){
+          cur_im.x = max(0.0, cur_im.x-0.1);
+        }
+        else if (color_mode == 'G' || color_mode == 'g'){
+          cur_im.y = max(0.0, cur_im.y-0.1);
+        }
+        else if (color_mode == 'B' || color_mode == 'b'){
+          cur_im.z = max(0.0, cur_im.z-0.1);
+        }
+      }
+    }
+  }
+    
+  //  if (key == CODED) {
+  //    if (keyCode == UP) {
+        
+  //    }
+  //  keyIndex = key - 'A';
+  //} else if (key >= 'a' && key <= 'z') {
+  //  keyIndex = key - 'a';
+  //}
+  //if (keyIndex == -1) {
+  //  // If it's not a letter key, clear the screen
+  //  background(0);
+  //} else { 
+  //  // It's a letter key, fill a rectangle
+  //  fill(millis() % 255);
+  //  float x = map(keyIndex, 0, 25, 0, width - rectWidth);
+  //  rect(x, 0, rectWidth, height);
+  //}
+}
