@@ -34,11 +34,17 @@ void diffusephong(PVector Im, PVector Kd, PVector N, PVector L) {
   RGB_im.z = constrain(RGB_im.z + N_L*Kd.z*Im.z,0,255);
 }
 
+PVector reflect(PVector dir, PVector normal){
+  PVector norm = normal.normalize(); // make sure normal is normalized
+  return dir.sub( norm.mult(2*dir.dot(norm)) );
+}
+
 // Function to compute specular component of Phong
 void specularphong(PVector Im, PVector Ks, PVector N, PVector L, PVector V){
   
   // Compute R = 2*(N.L)*N - L 
-  PVector R = PVector.sub(PVector.mult(N,2.0*(max(0.0,N.dot(L)))),L);
+  PVector incident = PVector.mult(L, -1);
+  PVector R = reflect(incident, N);
   
   // Equation is Im*Ks*(R.V)^q, where q=9 
   float R_L =(float)Math.pow((double)R.dot(V),9.0);
@@ -73,8 +79,8 @@ void change_image(){
     for(int j=0;j<height;j++){
       
       // Change V vector based on image pixels
-      V.x = (float)i - width/2;
-      V.y = (float)j - height/2;
+      V.x = ((float)2*i/width - 1);
+      V.y = (float)2*j/height - 1;
       V.z = 1.0;
       
       RGB_im.x = 0.0;
@@ -104,9 +110,9 @@ void setup() {
   camera(width/2.0, height/2.0, (height/2.0) / tan(PI*30.0 / 180.0), width/2.0, height/2.0, 0, 0, 1, 0);
   
   // Load texture images
-  base = loadImage("Texturas/char1_d.png");
-  mapNorm = loadImage("Texturas/char1_n.png");
-  mapSpec = loadImage("Texturas/char1_s.png");
+  base = loadImage("Texturas/char2_d.png");
+  mapNorm = loadImage("Texturas/char2_n.png");
+  mapSpec = loadImage("Texturas/char2_s.png");
     
   // Initialize Directional light
   direc_light = new PVector(0.0,0.0,1.0);
