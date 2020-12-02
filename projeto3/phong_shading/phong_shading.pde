@@ -29,9 +29,9 @@ void diffusephong(PVector Im, PVector Kd, PVector N, PVector L) {
   // Diffuse phong is Ks*(N.L)*Im
   float N_L = max(0.0,N.dot(L));
   
-  RGB_im.x = RGB_im.x + N_L*Kd.x*Im.x;
-  RGB_im.y = RGB_im.y + N_L*Kd.y*Im.y;
-  RGB_im.z = RGB_im.z + N_L*Kd.z*Im.z;
+  RGB_im.x = constrain(RGB_im.x + N_L*Kd.x*Im.x,0,255);
+  RGB_im.y = constrain(RGB_im.y + N_L*Kd.y*Im.y,0,255);
+  RGB_im.z = constrain(RGB_im.z + N_L*Kd.z*Im.z,0,255);
 }
 
 // Function to compute specular component of Phong
@@ -44,9 +44,9 @@ void specularphong(PVector Im, PVector Ks, PVector N, PVector L, PVector V){
   float R_L =(float)Math.pow((double)R.dot(V),9.0);
   
   
-  RGB_im.x = RGB_im.x + Ks.x*R_L*Im.x;
-  RGB_im.y = RGB_im.y + Ks.y*R_L*Im.y;
-  RGB_im.z = RGB_im.z + Ks.z*R_L*Im.z;
+  RGB_im.x = constrain(RGB_im.x + Ks.x*R_L*Im.x,0,255);
+  RGB_im.y = constrain(RGB_im.y + Ks.y*R_L*Im.y,0,255);
+  RGB_im.z = constrain(RGB_im.z + Ks.z*R_L*Im.z,0,255);
 }
 
 // Function to compute Phong
