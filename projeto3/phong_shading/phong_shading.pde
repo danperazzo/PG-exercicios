@@ -197,7 +197,7 @@ void keyPressed() {
   }
 }
 
-
+// Display the debug text in the canvas
 void writeText(){
   if (show_diffuse && show_specular){
     output_message = "Diffuse + Specular";
