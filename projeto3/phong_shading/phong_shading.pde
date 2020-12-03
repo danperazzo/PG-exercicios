@@ -1,26 +1,19 @@
 
-// Initialize texture maps
+// Texture maps
 PImage base;                    // Kd
 PImage mapNorm;                 // N
 PImage mapSpec;                 // Ks
 
-// Initialize final image
-PImage finalImage;
+PImage finalImage;              // Final image
+PVector final_img;              // Phong's output
+PVector direc_light;            // Directional light vector
+PVector Im;                     // Light intensity
+PVector V;                      // V vector
 
-// Initialize directional light vector
-PVector direc_light;
-PVector cur_im;
-
-PVector final_img;
-
-// Initialize V vector
-PVector V;
-
-// Color channel option
-int color_mode = 0;
-
-// Show images options
-boolean show_diffuse = true, show_specular = true;
+int color_mode = 0;                                   // Change the light color option
+boolean show_diffuse = true, show_specular = true;    // Show images options
+PFont f;                                              // Declare PFont variable for text displays
+String output_message = "Difuse + Specular";          // Output message with the displayed result, for debugging purpose
 
 
 // Function to comput diffuse phong component
@@ -102,7 +95,7 @@ void change_image(){
       PVector v_norm = new PVector(red(c_norm), green(c_norm), blue(c_norm));
       
       // generating the final image using the Phong algorithm
-      phong(cur_im, v_spec, v_base, v_norm, direc_light, V);
+      phong(Im, v_spec, v_base, v_norm, direc_light, V);
       color final_color = color(int(final_img.x), int(final_img.y), int(final_img.z));
       finalImage.set(i,j,final_color);          
     }
@@ -123,7 +116,7 @@ void setup() {
     
   // Initialize Directional light
   direc_light = new PVector(0.0,0.0,1.0);
-  cur_im = new PVector(1.,1.,1.);
+  Im = new PVector(1.,1.,1.);
   
   // Initialize V vector
   V = new PVector(0.0,0.0,1.0);
@@ -133,6 +126,9 @@ void setup() {
   
   // Initialize final image
   finalImage = createImage(396, 600, RGB);
+  
+  // Create a Font
+  f = createFont("Arial",16,true); 
 }
       
 void draw() {
@@ -150,7 +146,7 @@ void draw() {
 
 // Some interation are possible via keyboard keys
 void keyPressed() {
-  // Change the value of image's color channels (R or r = red, G or g = green, B or b = blue)
+  // Change the light color channels (R or r = red, G or g = green, B or b = blue)
   if (key == 'R' || key == 'r' || key == 'G' || key == 'g' || key == 'B' || key == 'b'){
     if (color_mode == 0)
       color_mode = key;
@@ -163,24 +159,24 @@ void keyPressed() {
     if (color_mode != 0){
       if (keyCode == UP) {
         if (color_mode == 'R' || color_mode == 'r'){
-          cur_im.x = min(1.0, cur_im.x+0.1);
+          Im.x = min(1.0, Im.x+0.1);
         }
         else if (color_mode == 'G' || color_mode == 'g'){
-          cur_im.y = min(1.0, cur_im.y+0.1);
+          Im.y = min(1.0, Im.y+0.1);
         }
         else if (color_mode == 'B' || color_mode == 'b'){
-          cur_im.z = min(1.0, cur_im.z+0.1);
+          Im.z = min(1.0, Im.z+0.1);
         }
       }
       else if (keyCode == DOWN){
         if (color_mode == 'R' || color_mode == 'r'){
-          cur_im.x = max(0.0, cur_im.x-0.1);
+          Im.x = max(0.0, Im.x-0.1);
         }
         else if (color_mode == 'G' || color_mode == 'g'){
-          cur_im.y = max(0.0, cur_im.y-0.1);
+          Im.y = max(0.0, Im.y-0.1);
         }
         else if (color_mode == 'B' || color_mode == 'b'){
-          cur_im.z = max(0.0, cur_im.z-0.1);
+          Im.z = max(0.0, Im.z-0.1);
         }
       }
     }
@@ -195,4 +191,26 @@ void keyPressed() {
   else if (key == 'S' || key == 's'){
     show_specular = !(show_specular);
   }
+}
+
+
+void writeText(){
+  if (show_diffuse && show_specular){
+    output_message = "Difusse + Specular";
+    
+    if (Im.x != 255. && Im.y != 255. && Im.z != 255.){
+       output_message = output_message + "(Light Color:[" + Im.x + "," + Im.y + "," + Im.z + "])";
+    }
+  }
+  textFont(f);       
+  fill(0);
+
+  textAlign(CENTER);
+  text("This text is centered.",width/2,60); 
+
+  textAlign(LEFT);
+  text("This text is left aligned.",width/2,100); 
+
+  textAlign(RIGHT);
+  text("This text is right aligned.",width/2,140);
 }
