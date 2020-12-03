@@ -52,10 +52,12 @@ void specularphong(PVector Im, PVector Ks, PVector N, PVector L, PVector V){
 // Function to compute Phong
 void phong(PVector Im, PVector Ks, PVector Kd, PVector N, PVector L, PVector V){
   
-  // Normalize V, N and L. It is necessary to avoid overflow
+  // Normalize V, N, L, and Im. It is necessary to avoid overflow
   V.normalize();
   N.normalize();
   L.normalize();
+  PVector cur_Im = new PVector(Im.x, Im.y, Im.z);
+  cur_Im.normalize();
   
   // final_img = ambient_component, where ambient_component = 0
   final_img.x = 0.0;
@@ -66,10 +68,10 @@ void phong(PVector Im, PVector Ks, PVector Kd, PVector N, PVector L, PVector V){
   // Adding diffuse and specular components to the ambient  if they have not been disabled
   // final_img = ambient_component + diffuse_component + specular_component 
   if (show_diffuse){
-    diffusephong(Im,Kd,N,L);
+    diffusephong(cur_Im,Kd,N,L);
   }
   if (show_specular){
-    specularphong(Im,Ks,N, L, V);
+    specularphong(cur_Im,Ks,N, L, V);
   }
 }
 
@@ -116,7 +118,7 @@ void setup() {
     
   // Initialize Directional light
   direc_light = new PVector(0.0,0.0,1.0);
-  Im = new PVector(1.,1.,1.);
+  Im = new PVector(255.,255.,255.);
   
   // Initialize V vector
   V = new PVector(0.0,0.0,1.0);
@@ -128,7 +130,7 @@ void setup() {
   finalImage = createImage(396, 600, RGB);
   
   // Create a Font
-  f = createFont("Arial",16,true); 
+  f = createFont("Lucida Sans",16,true); 
 }
       
 void draw() {
@@ -141,6 +143,8 @@ void draw() {
   
   // Display the final image
   image(finalImage,0,0);  
+  
+  writeText();
 }
 
 
@@ -159,24 +163,24 @@ void keyPressed() {
     if (color_mode != 0){
       if (keyCode == UP) {
         if (color_mode == 'R' || color_mode == 'r'){
-          Im.x = min(1.0, Im.x+0.1);
+          Im.x = min(255.0, Im.x+1);
         }
         else if (color_mode == 'G' || color_mode == 'g'){
-          Im.y = min(1.0, Im.y+0.1);
+          Im.y = min(255.0, Im.y+1);
         }
         else if (color_mode == 'B' || color_mode == 'b'){
-          Im.z = min(1.0, Im.z+0.1);
+          Im.z = min(255.0, Im.z+1);
         }
       }
       else if (keyCode == DOWN){
         if (color_mode == 'R' || color_mode == 'r'){
-          Im.x = max(0.0, Im.x-0.1);
+          Im.x = max(0.0, Im.x-1);
         }
         else if (color_mode == 'G' || color_mode == 'g'){
-          Im.y = max(0.0, Im.y-0.1);
+          Im.y = max(0.0, Im.y-1);
         }
         else if (color_mode == 'B' || color_mode == 'b'){
-          Im.z = max(0.0, Im.z-0.1);
+          Im.z = max(0.0, Im.z-1);
         }
       }
     }
@@ -196,21 +200,25 @@ void keyPressed() {
 
 void writeText(){
   if (show_diffuse && show_specular){
-    output_message = "Difusse + Specular";
-    
-    if (Im.x != 255. && Im.y != 255. && Im.z != 255.){
-       output_message = output_message + "(Light Color:[" + Im.x + "," + Im.y + "," + Im.z + "])";
-    }
+    output_message = "Diffuse + Specular";
   }
+  else if (show_diffuse){
+    output_message = "Diffuse Only";
+  }
+  else if (show_specular){
+    output_message = "Specular Only";
+  }
+  else{
+    output_message = "None";
+  }
+  
   textFont(f);       
-  fill(0);
-
-  textAlign(CENTER);
-  text("This text is centered.",width/2,60); 
-
-  textAlign(LEFT);
-  text("This text is left aligned.",width/2,100); 
-
+  fill(255);
   textAlign(RIGHT);
-  text("This text is right aligned.",width/2,140);
+  text(output_message,185,40); 
+  
+  if ((Im.x != 255. || Im.y != 255. || Im.z != 255.) &&  output_message != "None"){
+       output_message = "(Light Color:[" + Im.x + "," + Im.y + "," + Im.z + "])";
+       text(output_message,215,60); 
+    }
 }
