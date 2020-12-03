@@ -20,7 +20,7 @@ PVector V;
 int color_mode = 0;
 
 // Show images options
-boolean show_diffuse = false, show_specular = false;
+boolean show_diffuse = true, show_specular = true;
 
 
 // Function to comput diffuse phong component
@@ -66,10 +66,14 @@ void phong(PVector Im, PVector Ks, PVector Kd, PVector N, PVector L, PVector V){
   // Compute Specular and Diffuse Phong. Initialize RGB value as 0 vector and sum vector in functions
   // Phong color = Specular_component + diffuse_component
   RGB_im = new PVector(0.0,0.0,0.0);
-  if (show_specular)
-    specularphong(Im,Ks,N, L, V);
-  if (show_diffuse)
+  
+  if (show_diffuse){
     diffusephong(Im,Kd,N,L);
+  }
+  
+  if (show_specular){
+    specularphong(Im,Ks,N, L, V);
+  }
 }
 
 void change_image(){
@@ -129,8 +133,8 @@ void setup() {
       
 void draw() {
   // Get directional light from your mouse coordinates
-  direc_light.x =  width/2 - mouseX;
-  direc_light.y = height/2 - mouseY;
+  direc_light.x =  abs(width/2 - mouseX);
+  direc_light.y = abs(height/2 - mouseY);
   
   // Change Image based on phong]
   change_image();
