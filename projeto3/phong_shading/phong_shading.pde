@@ -1,6 +1,6 @@
 
 // Initialize texture maps
-PImage base;                    // RGB_im
+PImage base;                    // Kd
 PImage mapNorm;                 // N
 PImage mapSpec;                 // Ks
 
@@ -11,7 +11,7 @@ PImage finalImage;
 PVector direc_light;
 PVector cur_im;
 
-PVector RGB_im;
+PVector final_img;
 
 // Initialize V vector
 PVector V;
@@ -29,9 +29,10 @@ void diffusephong(PVector Im, PVector Kd, PVector N, PVector L) {
   // Diffuse phong is Ks*(N.L)*Im
   float N_L = max(0.0,N.dot(L));
   
-  RGB_im.x = constrain(RGB_im.x + N_L*Kd.x*Im.x,0,255);
-  RGB_im.y = constrain(RGB_im.y + N_L*Kd.y*Im.y,0,255);
-  RGB_im.z = constrain(RGB_im.z + N_L*Kd.z*Im.z,0,255);
+  // Adding diffuse component to the current final image
+  final_img.x = constrain(final_img.x + N_L*Kd.x*Im.x,0,255);
+  final_img.y = constrain(final_img.y + N_L*Kd.y*Im.y,0,255);
+  final_img.z = constrain(final_img.z + N_L*Kd.z*Im.z,0,255);
 }
 
 PVector reflect(PVector dir, PVector normal){
@@ -49,10 +50,10 @@ void specularphong(PVector Im, PVector Ks, PVector N, PVector L, PVector V){
   // Equation is Im*Ks*(R.V)^q, where q=9 
   float R_L =(float)Math.pow((double)R.dot(V),9.0);
   
-  
-  RGB_im.x = constrain(RGB_im.x + Ks.x*R_L*Im.x,0,255);
-  RGB_im.y = constrain(RGB_im.y + Ks.y*R_L*Im.y,0,255);
-  RGB_im.z = constrain(RGB_im.z + Ks.z*R_L*Im.z,0,255);
+  // Adding specular component to the current final image
+  final_img.x = constrain(final_img.x + Ks.x*R_L*Im.x,0,255);
+  final_img.y = constrain(final_img.y + Ks.y*R_L*Im.y,0,255);
+  final_img.z = constrain(final_img.z + Ks.z*R_L*Im.z,0,255);
 }
 
 // Function to compute Phong
@@ -63,14 +64,17 @@ void phong(PVector Im, PVector Ks, PVector Kd, PVector N, PVector L, PVector V){
   N.normalize();
   L.normalize();
   
-  // Compute Specular and Diffuse Phong. Initialize RGB value as 0 vector and sum vector in functions
-  // Phong color = Specular_component + diffuse_component
-  RGB_im = new PVector(0.0,0.0,0.0);
+  // final_img = ambient_component, where ambient_component = 0
+  final_img.x = 0.0;
+  final_img.y = 0.0;
+  final_img.z = 0.0;
+
   
+  // Adding diffuse and specular components to the ambient  if they have not been disabled
+  // final_img = ambient_component + diffuse_component + specular_component 
   if (show_diffuse){
     diffusephong(Im,Kd,N,L);
   }
-  
   if (show_specular){
     specularphong(Im,Ks,N, L, V);
   }
@@ -87,20 +91,19 @@ void change_image(){
       V.y = (float)2*j/height - 1;
       V.z = 1.0;
       
-      RGB_im.x = 0.0;
-      RGB_im.y = 0.0;
-      RGB_im.z = 0.0;
-      
+      // Getting the color value from the current pixel in each one of the three input textures
       color c_spec = mapSpec.get(i,j);
       color c_base = base.get(i,j);
       color c_norm = mapNorm.get(i,j);
       
+      // Getting the Ks, Kd, and N current values (for each one of the image's color channel)
       PVector v_spec = new PVector(red(c_spec), green(c_spec), blue(c_spec));
       PVector v_base = new PVector(red(c_base), green(c_base), blue(c_base));
       PVector v_norm = new PVector(red(c_norm), green(c_norm), blue(c_norm));
       
+      // generating the final image using the Phong algorithm
       phong(cur_im, v_spec, v_base, v_norm, direc_light, V);
-      color final_color = color(int(RGB_im.x), int(RGB_im.y), int(RGB_im.z));
+      color final_color = color(int(final_img.x), int(final_img.y), int(final_img.z));
       finalImage.set(i,j,final_color);          
     }
   }
@@ -125,7 +128,8 @@ void setup() {
   // Initialize V vector
   V = new PVector(0.0,0.0,1.0);
   
-  RGB_im = new PVector(0.0,0.0,0.0);
+  // Initialize the output of the Phong algorithm with the ambient component
+  final_img = new PVector(0.0,0.0,0.0);
   
   // Initialize final image
   finalImage = createImage(396, 600, RGB);
@@ -136,15 +140,17 @@ void draw() {
   direc_light.x =  abs(width/2 - mouseX);
   direc_light.y = abs(height/2 - mouseY);
   
-  // Change Image based on phong]
+  // Change the final image using the Phong algorithm
   change_image();
   
-  // Draw image
+  // Display the final image
   image(finalImage,0,0);  
 }
 
 
+// Some interation are possible via keyboard keys
 void keyPressed() {
+  // Change the value of image's color channels (R or r = red, G or g = green, B or b = blue)
   if (key == 'R' || key == 'r' || key == 'G' || key == 'g' || key == 'B' || key == 'b'){
     if (color_mode == 0)
       color_mode = key;
@@ -152,6 +158,7 @@ void keyPressed() {
       color_mode = 0;
   }
  
+ // If the change color mode is on, the user may alter the value with the UP and DOWN keys
   else if (key == CODED){
     if (color_mode != 0){
       if (keyCode == UP) {
@@ -179,10 +186,12 @@ void keyPressed() {
     }
   }
   
+  // Disable/Enable the diffuse component 
   else if (key == 'D' || key == 'd'){
     show_diffuse = !(show_diffuse);
   }
   
+  // Disable/Enable the specular component
   else if (key == 'S' || key == 's'){
     show_specular = !(show_specular);
   }
