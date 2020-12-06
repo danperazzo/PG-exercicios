@@ -135,8 +135,8 @@ void setup() {
       
 void draw() {
   // Get directional light from your mouse coordinates
-  direc_light.x =  abs(width/2 - mouseX);
-  direc_light.y = abs(height/2 - mouseY);
+  direc_light.x =  width/2 - mouseX;
+  direc_light.y = height/2 - mouseY;
   
   // Change the final image using the Phong algorithm
   change_image();
@@ -163,24 +163,24 @@ void keyPressed() {
     if (color_mode != 0){
       if (keyCode == UP) {
         if (color_mode == 'R' || color_mode == 'r'){
-          Im.x = min(255.0, Im.x+1);
+          Im.x = min(255.0, Im.x+10);
         }
         else if (color_mode == 'G' || color_mode == 'g'){
-          Im.y = min(255.0, Im.y+1);
+          Im.y = min(255.0, Im.y+10);
         }
         else if (color_mode == 'B' || color_mode == 'b'){
-          Im.z = min(255.0, Im.z+1);
+          Im.z = min(255.0, Im.z+10);
         }
       }
       else if (keyCode == DOWN){
         if (color_mode == 'R' || color_mode == 'r'){
-          Im.x = max(0.0, Im.x-1);
+          Im.x = max(0.0, Im.x-10);
         }
         else if (color_mode == 'G' || color_mode == 'g'){
-          Im.y = max(0.0, Im.y-1);
+          Im.y = max(0.0, Im.y-10);
         }
         else if (color_mode == 'B' || color_mode == 'b'){
-          Im.z = max(0.0, Im.z-1);
+          Im.z = max(0.0, Im.z-10);
         }
       }
     }
