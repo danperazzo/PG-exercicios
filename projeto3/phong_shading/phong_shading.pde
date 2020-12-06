@@ -107,14 +107,14 @@ void change_image(){
 
 void setup() {
   
-  // Initialize Image and vector
+  // Initialize Image and vectorr
   size(396, 600, P3D);
   camera(width/2.0, height/2.0, (height/2.0) / tan(PI*30.0 / 180.0), width/2.0, height/2.0, 0, 0, 1, 0);
   
   // Load texture images
-  base = loadImage("Texturas/char2_d.png");
-  mapNorm = loadImage("Texturas/char2_n.png");
-  mapSpec = loadImage("Texturas/char2_s.png");
+  base = loadImage("Texturas/char1_d.png");
+  mapNorm = loadImage("Texturas/char1_n.png");
+  mapSpec = loadImage("Texturas/char1_s.png");
     
   // Initialize Directional light
   direc_light = new PVector(0.0,0.0,1.0);
@@ -158,7 +158,7 @@ void keyPressed() {
       color_mode = 0;
   }
  
- // If the change color mode is on, the user may alter the value with the UP and DOWN keys
+ // If the change color mode is on, Rthe user may alter the value with the UP and DOWN keys
   else if (key == CODED){
     if (color_mode != 0){
       if (keyCode == UP) {
