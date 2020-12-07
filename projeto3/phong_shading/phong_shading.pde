@@ -152,38 +152,35 @@ void draw() {
 void keyPressed() {
   // Change the light color channels (R or r = red, G or g = green, B or b = blue)
   if (key == 'R' || key == 'r' || key == 'G' || key == 'g' || key == 'B' || key == 'b'){
-    if (color_mode == 0)
-      color_mode = key;
-    else 
-      color_mode = 0;
+    
+    color_mode = key;
   }
  
  // If the change color mode is on, Rthe user may alter the value with the UP and DOWN keys
   else if (key == CODED){
-    if (color_mode != 0){
-      if (keyCode == UP) {
-        if (color_mode == 'R' || color_mode == 'r'){
-          Im.x = min(255.0, Im.x+10);
-        }
-        else if (color_mode == 'G' || color_mode == 'g'){
-          Im.y = min(255.0, Im.y+10);
-        }
-        else if (color_mode == 'B' || color_mode == 'b'){
-          Im.z = min(255.0, Im.z+10);
-        }
+    if (keyCode == UP) {
+      if (color_mode == 'R' || color_mode == 'r'){
+        Im.x = min(255.0, Im.x+10);
       }
-      else if (keyCode == DOWN){
-        if (color_mode == 'R' || color_mode == 'r'){
-          Im.x = max(0.0, Im.x-10);
-        }
-        else if (color_mode == 'G' || color_mode == 'g'){
-          Im.y = max(0.0, Im.y-10);
-        }
-        else if (color_mode == 'B' || color_mode == 'b'){
-          Im.z = max(0.0, Im.z-10);
-        }
+      else if (color_mode == 'G' || color_mode == 'g'){
+        Im.y = min(255.0, Im.y+10);
+      }
+      else if (color_mode == 'B' || color_mode == 'b'){
+        Im.z = min(255.0, Im.z+10);
       }
     }
+    else if (keyCode == DOWN){
+      if (color_mode == 'R' || color_mode == 'r'){
+        Im.x = max(0.0, Im.x-10);
+      }
+      else if (color_mode == 'G' || color_mode == 'g'){
+        Im.y = max(0.0, Im.y-10);
+      }
+      else if (color_mode == 'B' || color_mode == 'b'){
+        Im.z = max(0.0, Im.z-10);
+      }
+    }
+    
   }
   
   // Disable/Enable the diffuse component 
@@ -218,7 +215,7 @@ void writeText(){
   text(output_message,185,40); 
   
   if ((Im.x != 255. || Im.y != 255. || Im.z != 255.) &&  output_message != "None"){
-       output_message = "(Light Color:[" + Im.x + "," + Im.y + "," + Im.z + "])";
+       output_message = "(Color:[" + Im.x + "," + Im.y + "," + Im.z + "])";
        text(output_message,215,60); 
     }
 }
