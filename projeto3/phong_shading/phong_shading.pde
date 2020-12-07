@@ -30,7 +30,8 @@ void diffusephong(PVector Im, PVector Kd, PVector N, PVector L) {
 
 PVector reflect(PVector dir, PVector normal){
   PVector norm = normal.normalize(); // make sure normal is normalized
-  return dir.sub( norm.mult(2*dir.dot(norm)) );
+  PVector almost_norm = PVector.mult(norm,2*dir.dot(norm));
+  return dir.sub( almost_norm );
 }
 
 // Function to compute specular component of Phong
@@ -59,7 +60,7 @@ void phong(PVector Im, PVector Ks, PVector Kd, PVector N, PVector L, PVector V){
   PVector cur_Im = new PVector(Im.x, Im.y, Im.z);
   cur_Im.normalize();
   
-  // final_img = ambient_component, where ambient_component = 0
+  // final_img = ambient_component, where ambient_component = 0 (Ia*ka)
   final_img.x = 0.0;
   final_img.y = 0.0;
   final_img.z = 0.0;
