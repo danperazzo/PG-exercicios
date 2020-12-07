@@ -113,9 +113,9 @@ void setup() {
   camera(width/2.0, height/2.0, (height/2.0) / tan(PI*30.0 / 180.0), width/2.0, height/2.0, 0, 0, 1, 0);
   
   // Load texture images
-  base = loadImage("Texturas/char1_d.png");
-  mapNorm = loadImage("Texturas/char1_n.png");
-  mapSpec = loadImage("Texturas/char1_s.png");
+  base = loadImage("Texturas/char2_d.png");
+  mapNorm = loadImage("Texturas/char2_n.png");
+  mapSpec = loadImage("Texturas/char2_s.png");
     
   // Initialize Directional light
   direc_light = new PVector(0.0,0.0,1.0);
